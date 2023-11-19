@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -47,32 +48,26 @@ namespace Sudoku.WinForm
 
         private int[,] SetFirstValues(int[,] sudokuTable, int firstValueLength)
         {
-            int value = 0;
             int randomColumnIndex = 0;
             int randomRowIndex = 0;
-            int attempts = 0;
 
-
-            for (int i = 0; i < firstValueLength; i++)
+            for (int i = 0; i < firstValueLength;)
             {
-                attempts = 0;
-                do
+                randomColumnIndex = _random.Next(0, 9);
+                randomRowIndex = _random.Next(0, 9);
+
+                if (sudokuTable[randomColumnIndex, randomRowIndex] == 0)
                 {
-                    randomRowIndex = _random.Next(0, 9);
-                    randomColumnIndex = _random.Next(0, 9);
-                    value = _random.Next(1, 10);
-
-                    attempts++;
-
-                    if (attempts > 100)
-                        break;
-
-                } while (sudokuTable[randomColumnIndex, randomRowIndex] != 0 && !IsAppropriateValue(sudokuTable, randomColumnIndex, randomRowIndex, value));
-
-                if (attempts > 100)
-                    break;
-
-                sudokuTable[randomColumnIndex, randomRowIndex] = value;
+                    for (int value = 1; value <= ROW_COLUMN_SIZE; value++)
+                    {
+                        if (IsAppropriateValue(sudokuTable, randomColumnIndex, randomRowIndex, value))
+                        {
+                            sudokuTable[randomColumnIndex, randomRowIndex] = value;
+                            break;
+                        }
+                    }
+                    i++;
+                }
             }
 
             return sudokuTable;
@@ -80,7 +75,7 @@ namespace Sudoku.WinForm
 
         private int[,] CreateSudokuTable(int[,] sudokuTable)
         {
-            return SetFirstValues(sudokuTable, 81);
+            return SetFirstValues(sudokuTable, 30);
         }
 
         private bool IsAppropriateValue(int[,] sudokuTable, int column, int row, int value)
