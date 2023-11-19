@@ -64,13 +64,11 @@ namespace Sudoku.WinForm
 
                     attempts++;
 
-                    // Belirli bir sayıda deneme yapıldıktan sonra döngüden çık
                     if (attempts > 100)
                         break;
 
                 } while (sudokuTable[randomColumnIndex, randomRowIndex] != 0 && !IsAppropriateValue(sudokuTable, randomColumnIndex, randomRowIndex, value));
 
-                // Belirli bir sayıda deneme yapıldıktan sonra döngüden çık
                 if (attempts > 100)
                     break;
 
