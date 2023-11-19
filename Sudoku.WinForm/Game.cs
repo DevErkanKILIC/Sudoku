@@ -82,7 +82,7 @@ namespace Sudoku.WinForm
 
         private int[,] CreateSudokuTable(int[,] sudokuTable)
         {
-            return SetFirstValues(sudokuTable, 10);
+            return SetFirstValues(sudokuTable, 81);
         }
 
         private bool IsAppropriateValue(int[,] sudokuTable, int column, int row, int value)
