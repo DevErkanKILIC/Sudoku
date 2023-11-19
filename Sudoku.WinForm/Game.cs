@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Sudoku.WinForm
@@ -49,23 +50,39 @@ namespace Sudoku.WinForm
             int value = 0;
             int randomColumnIndex = 0;
             int randomRowIndex = 0;
+            int attempts = 0;
+
+
             for (int i = 0; i < firstValueLength; i++)
             {
+                attempts = 0;
                 do
                 {
                     randomRowIndex = _random.Next(0, 9);
                     randomColumnIndex = _random.Next(0, 9);
                     value = _random.Next(1, 10);
-                } while (sudokuTable[randomRowIndex, randomColumnIndex] != 0 || !IsAppropriateValue(sudokuTable, randomRowIndex, randomColumnIndex, value));
 
-                sudokuTable[randomRowIndex, randomColumnIndex] = value;
+                    attempts++;
+
+                    // Belirli bir sayýda deneme yapýldýktan sonra döngüden çýk
+                    if (attempts > 100)
+                        break;
+
+                } while (sudokuTable[randomColumnIndex, randomRowIndex] != 0 && !IsAppropriateValue(sudokuTable, randomColumnIndex, randomRowIndex, value));
+
+                // Belirli bir sayýda deneme yapýldýktan sonra döngüden çýk
+                if (attempts > 100)
+                    break;
+
+                sudokuTable[randomColumnIndex, randomRowIndex] = value;
             }
+
             return sudokuTable;
         }
 
         private int[,] CreateSudokuTable(int[,] sudokuTable)
         {
-            return SetFirstValues(sudokuTable,40);
+            return SetFirstValues(sudokuTable, 10);
         }
 
         private bool IsAppropriateValue(int[,] sudokuTable, int column, int row, int value)
@@ -156,12 +173,9 @@ namespace Sudoku.WinForm
         }
 
 
-
-
         private void Game_KeyPress(object? sender, KeyPressEventArgs e)
         {
-            if (!char.IsDigit(e.KeyChar)) e.Handled = true;
-            else e.Handled = false;
+            e.Handled = !char.IsDigit(e.KeyChar);
         }
     }
 }
