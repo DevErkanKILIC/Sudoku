@@ -35,6 +35,7 @@ namespace Sudoku.WinForm
             CreateSudokuTable(_sudokuTable);
             CreateSudokuTableComponents();
             PrintSolvedSudokuTable(_sudokuTable);
+            //PrintSudokuTable(_sudokuTable);
         }
 
         private int[,] SetFirstValue(int[,] sudokuTable)
@@ -43,9 +44,28 @@ namespace Sudoku.WinForm
             return sudokuTable;
         }
 
+        private int[,] SetFirstValues(int[,] sudokuTable, int firstValueLength)
+        {
+            int value = 0;
+            int randomColumnIndex = 0;
+            int randomRowIndex = 0;
+            for (int i = 0; i < firstValueLength; i++)
+            {
+                do
+                {
+                    randomRowIndex = _random.Next(0, 9);
+                    randomColumnIndex = _random.Next(0, 9);
+                    value = _random.Next(1, 10);
+                } while (sudokuTable[randomRowIndex, randomColumnIndex] != 0 || !IsAppropriateValue(sudokuTable, randomRowIndex, randomColumnIndex, value));
+
+                sudokuTable[randomRowIndex, randomColumnIndex] = value;
+            }
+            return sudokuTable;
+        }
+
         private int[,] CreateSudokuTable(int[,] sudokuTable)
         {
-            return SetFirstValue(sudokuTable);
+            return SetFirstValues(sudokuTable,40);
         }
 
         private bool IsAppropriateValue(int[,] sudokuTable, int column, int row, int value)
@@ -124,7 +144,7 @@ namespace Sudoku.WinForm
 
         private void PrintSolvedSudokuTable(int[,] sudokuTable)
         {
-            SolveSudokuTable(sudokuTable);
+            if (!SolveSudokuTable(sudokuTable)) { MessageBox.Show("Sudoku cannot be solve"); }
 
             for (int column = 0; column < ROW_COLUMN_SIZE; column++)
             {
